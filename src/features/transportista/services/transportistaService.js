@@ -18,7 +18,7 @@ export const getPedidosEntrega = async () => {
         )
       )
     `)
-    .eq('estado_entrega', 'asignado') // 👈 Cambiado a 'pending' (o el valor en inglés de tu ENUM)
+    .eq('estado_entrega', 'asignado') 
     .order('creado_en', { ascending: false })
 
   if (error) {
