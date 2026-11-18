@@ -5,6 +5,6 @@ export const usePedidosEntrega = () => {
   return useQuery({
     queryKey: ['pedidos-pendientes-transportista'],
     queryFn: getPedidosEntrega,
-    staleTime: 1000 * 60 * 5, // Cache de 5 minutos
+    staleTime: 1000 * 60 * 0, // Cache de 5 minutos
   })
 }

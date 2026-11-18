@@ -1,6 +1,5 @@
 import { supabase } from '@/config/supabaseClient'
 
-
 export const getPedidosEntrega = async () => {
   const { data, error } = await supabase
     .from('pedido_entrega')
@@ -18,7 +17,7 @@ export const getPedidosEntrega = async () => {
         )
       )
     `)
-    .eq('estado_entrega', 'asignado') 
+    .eq('estado_entrega', 'buscando_distribuidor')
     .order('creado_en', { ascending: false })
 
   if (error) {
@@ -28,7 +27,3 @@ export const getPedidosEntrega = async () => {
 
   return data
 }
-
-
-
-
