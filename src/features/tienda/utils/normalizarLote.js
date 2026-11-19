@@ -13,9 +13,8 @@ export const normalizarLote = (lote) => {
   const cultivo = Array.isArray(cosecha?.cultivo) ? cosecha.cultivo[0] : cosecha?.cultivo
   const productor = Array.isArray(cosecha?.perfiles) ? cosecha.perfiles[0] : cosecha?.perfiles
   const remateRaw = Array.isArray(lote.alerta_remates) ? lote.alerta_remates[0] : lote.alerta_remates
-  const remateVigente =
-    remateRaw?.esta_activa && (!remateRaw.fecha_fin || new Date(remateRaw.fecha_fin) > new Date())
-  const remate = remateVigente ? remateRaw : null
+  const remate =
+  remateRaw?.esta_activa && new Date(remateRaw.fecha_fin) > new Date() ? remateRaw : null
   const unidad = cosecha?.unidad_medida === 'libras' ? 'lb' : 'u'
   const precioBase = Number(lote.precio_base_lote)
 
