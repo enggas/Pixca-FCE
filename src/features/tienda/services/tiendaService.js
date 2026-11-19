@@ -16,7 +16,7 @@ export const getLotesDisponibles = async () => {
         productor_id,
         perfiles ( nombre_completo, direccion_general )
       ),
-      alerta_remates ( precio_descuento, esta_activa )
+      alerta_remates ( precio_descuento, esta_activa, motivo_remate, fecha_fin )
     `)
     .gt('stock_disponible', 0)
     .order('creado_en', { ascending: false })

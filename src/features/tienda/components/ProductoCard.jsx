@@ -1,12 +1,26 @@
-import { MapPin } from 'lucide-react'
+import { useState } from 'react'
+import { MapPin, ShoppingCart, Clock } from 'lucide-react'
 import { ProductImage } from '../../landing/components/ProductImage'
 import { normalizarLote } from '../utils/normalizarLote'
+import { useCarrito } from '../hooks/useCarrito'
 
 export const ProductoCard = ({ lote }) => {
   const producto = normalizarLote(lote)
+  const { items, agregar } = useCarrito()
+  const [cantidad, setCantidad] = useState(1)
+
+  const enCarrito = items.find((i) => i.loteId === producto.id)?.cantidad ?? 0
+  const disponible = producto.stock - enCarrito
+  const cantidadValida = cantidad >= 1 && cantidad <= disponible
+
+  const handleAgregar = () => {
+    if (!cantidadValida) return
+    agregar(producto, cantidad)
+    setCantidad(1)
+  }
 
   return (
-    <div className="border border-line rounded-2xl overflow-hidden hover:shadow-md transition-shadow bg-white">
+    <div className="border border-line rounded-2xl overflow-hidden hover:shadow-md transition-shadow bg-white flex flex-col">
       <div className="relative aspect-square">
         <ProductImage alt={producto.nombre} className="absolute inset-0 w-full h-full" />
         {producto.descuentoTexto && (
@@ -16,7 +30,7 @@ export const ProductoCard = ({ lote }) => {
         )}
       </div>
 
-      <div className="p-4">
+      <div className="p-4 flex-1 flex flex-col">
         <p className="font-semibold text-strong">{producto.nombre}</p>
         <p className="text-sm text-muted-2 mb-1">
           {producto.calidad}
@@ -33,7 +47,41 @@ export const ProductoCard = ({ lote }) => {
             <span className="text-sm text-faint line-through font-normal">{producto.precioBaseTexto}</span>
           )}
         </p>
-        <p className="text-xs text-muted">{producto.stock} {producto.unidad} disponibles</p>
+
+        {producto.tieneRemate && (
+          <p className="flex items-start gap-1 text-xs text-sale mb-1">
+            <Clock className="w-3 h-3 mt-0.5 shrink-0" />
+            <span>
+              {producto.remateMotivo} · hasta {producto.remateFinTexto}
+            </span>
+          </p>
+        )}
+
+        <p className="text-xs text-muted mb-3">
+          {producto.stock} {producto.unidad} disponibles
+          {enCarrito > 0 ? ` · ${enCarrito} en tu carrito` : ''}
+        </p>
+
+        <div className="mt-auto flex items-center gap-2">
+          <input
+            type="number"
+            min={1}
+            max={Math.max(disponible, 1)}
+            value={cantidad}
+            onChange={(event) => setCantidad(Number(event.target.value))}
+            aria-label={`Cantidad de ${producto.nombre}`}
+            className="w-16 px-2 py-1.5 border border-line rounded-lg text-sm text-ink"
+          />
+          <button
+            type="button"
+            onClick={handleAgregar}
+            disabled={!cantidadValida}
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-brand-500 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ShoppingCart className="w-4 h-4" />
+            Agregar
+          </button>
+        </div>
       </div>
     </div>
   )
