@@ -5,6 +5,7 @@ import { signInWithPassword, signInWithOAuth, getRolUsuario } from '../services/
 const RUTA_POR_ROL = {
   comprador: '/tienda',
   distribuidor: '/transportista',
+  productor: '/productor',
 }
 
 const traducirError = (message) => {
