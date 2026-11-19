@@ -1,18 +1,21 @@
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useLotes } from '../hooks/useLotes'
 import { normalizarLote, CATEGORIA_LABELS } from '../utils/normalizarLote'
 import { ProductoCard } from '../components/ProductoCard'
 import { TiendaTopBar } from '../components/TiendaTopBar'
-import { signOut } from '../../auth/services/authService'
+import { RematesDestacados } from '../components/RematesDestacados'
 
-const CATEGORIAS = [{ value: null, label: 'Todos' }, ...Object.entries(CATEGORIA_LABELS).map(([value, label]) => ({ value, label }))]
+const CATEGORIAS = [
+  { value: null, label: 'Todos' },
+  ...Object.entries(CATEGORIA_LABELS).map(([value, label]) => ({ value, label })),
+]
 
 export const TiendaPage = () => {
-  const navigate = useNavigate()
   const { data: lotes, isLoading, error } = useLotes()
   const [busqueda, setBusqueda] = useState('')
   const [categoria, setCategoria] = useState(null)
+
+  const remates = useMemo(() => (lotes ?? []).filter((lote) => normalizarLote(lote).tieneRemate), [lotes])
 
   const lotesFiltrados = useMemo(() => {
     if (!lotes) return []
@@ -26,16 +29,13 @@ export const TiendaPage = () => {
     })
   }, [lotes, busqueda, categoria])
 
-  const handleCerrarSesion = async () => {
-    await signOut()
-    navigate('/login')
-  }
-
   return (
     <div className="min-h-screen bg-cream">
-      <TiendaTopBar busqueda={busqueda} onBusquedaChange={setBusqueda} onCerrarSesion={handleCerrarSesion} />
+      <TiendaTopBar busqueda={busqueda} onBusquedaChange={setBusqueda} />
 
       <main className="max-w-6xl mx-auto px-6 py-8">
+        {!isLoading && !error && <RematesDestacados lotes={remates} />}
+
         <h1 className="text-2xl font-bold text-ink mb-1">Catálogo</h1>
         <p className="text-sm text-muted mb-6">Productos frescos directo del productor</p>
 
@@ -56,9 +56,7 @@ export const TiendaPage = () => {
           ))}
         </div>
 
-        {isLoading && (
-          <div className="py-16 text-center text-muted">Cargando productos…</div>
-        )}
+        {isLoading && <div className="py-16 text-center text-muted">Cargando productos…</div>}
 
         {error && (
           <div className="p-4 bg-sale/10 text-sale rounded-lg border border-sale/30">
