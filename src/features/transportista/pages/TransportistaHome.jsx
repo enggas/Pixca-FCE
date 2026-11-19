@@ -6,6 +6,7 @@ import { SolicitudesSection } from '../components/SolicitudesSection'
 import { ViajesSection } from '../components/ViajesSection'
 import { VehiculosSection } from '../components/VehiculosSection'
 import { HistorialSection } from '../components/HistorialSection'
+import { MisOfertas } from '../components/MisOfertas'
 
 const SECCIONES = [
   { id: 'solicitudes', label: 'Solicitudes', icono: Package, componente: SolicitudesSection },
@@ -94,6 +95,7 @@ export const TransportistaHome = () => {
 
         <main className="max-w-4xl mx-auto px-4 md:px-8 py-8">
           <Seccion />
+          <MisOfertas />
         </main>
       </div>
     </div>

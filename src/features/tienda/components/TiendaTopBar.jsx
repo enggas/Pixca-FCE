@@ -52,6 +52,10 @@ export const TiendaTopBar = ({ busqueda = '', onBusquedaChange }) => {
             )}
           </Link>
 
+          <Link to="/mis-entregas" className="ml-auto text-sm font-semibold text-body hover:text-ink transition-colors">
++          Mis entregas
++        </Link>
+
           <button
             type="button"
             onClick={handleCerrarSesion}

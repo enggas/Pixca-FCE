@@ -1,8 +1,17 @@
-export const CATEGORIA_LABELS = {
-  frutas: 'Frutas',
-  vegetales: 'Vegetales',
-  tuberculos: 'Tubérculos',
-  granos_basicos: 'Granos básicos',
+const IMAGENES_POR_PALABRA = [
+  ['naranja', '/productos/naranjas.jpg'],
+  ['tomate', '/productos/tomates.jpg'],
+  ['platano', '/productos/platanos.jpg'],
+  ['aguacate', '/productos/aguacates.jpg'],
+  ['frijol', '/productos/frijol.jpg'],
+]
+
+const quitarTildes = (texto) => texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
+const resolverImagen = (cultivo) => {
+  if (cultivo?.imagen_url) return cultivo.imagen_url
+  const nombre = quitarTildes((cultivo?.nombre || '').toLowerCase())
+  return IMAGENES_POR_PALABRA.find(([palabra]) => nombre.includes(palabra))?.[1] || null
 }
 
 export const formatCordobas = (monto) =>
@@ -21,6 +30,8 @@ export const normalizarLote = (lote) => {
   return {
     id: lote.id,
     nombre: cultivo?.nombre || 'Producto',
+    imagen: resolverImagen(cultivo),
+    productorId: cosecha?.productor_id || null,
     categoria: cultivo?.categoria || null,
     calidad: lote.calidad_clasificacion,
     productorNombre: productor?.nombre_completo || 'Productor',

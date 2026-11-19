@@ -11,8 +11,8 @@ export const getLotesDisponibles = async () => {
       creado_en,
       cosechas (
         id,
-        unidad_medida,
-        cultivo ( nombre, categoria ),
+        unidad_medida, 
+        cultivo ( nombre, categoria, imagen_url ),
         productor_id,
         perfiles ( nombre_completo, direccion_general )
       ),

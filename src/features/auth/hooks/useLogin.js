@@ -6,8 +6,9 @@ const RUTA_POR_ROL = {
   comprador: '/tienda',
   distribuidor: '/transportista',
   productor: '/productor',
+  productor: '/mis-entregas',
 }
-
+git 
 const traducirError = (message) => {
   if (message?.includes('Invalid login credentials')) {
     return 'Correo o contraseña incorrectos'

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MapPin, ShoppingCart, Clock } from 'lucide-react'
 import { ProductImage } from '../../landing/components/ProductImage'
+import { WhatsAppButton } from '../../contacto/components/WhatsappButton'
 import { normalizarLote } from '../utils/normalizarLote'
 import { useCarrito } from '../hooks/useCarrito'
 
@@ -22,7 +23,7 @@ export const ProductoCard = ({ lote }) => {
   return (
     <div className="border border-line rounded-2xl overflow-hidden hover:shadow-md transition-shadow bg-white flex flex-col">
       <div className="relative aspect-square">
-        <ProductImage alt={producto.nombre} className="absolute inset-0 w-full h-full" />
+        <ProductImage src={producto.imagen} alt={producto.nombre} className="absolute inset-0 w-full h-full" />
         {producto.descuentoTexto && (
           <span className="absolute top-2 left-2 bg-sale text-white text-xs font-bold rounded-lg px-2.5 py-1">
             {producto.descuentoTexto}
@@ -61,6 +62,15 @@ export const ProductoCard = ({ lote }) => {
           {producto.stock} {producto.unidad} disponibles
           {enCarrito > 0 ? ` · ${enCarrito} en tu carrito` : ''}
         </p>
+
+        {producto.productorId && (
+          <WhatsAppButton
+            className="mt-3"
+            destinoId={producto.productorId}
+           label="Contactar productor"
+            mensaje={`Hola ${producto.productorNombre}, vi en Pixca tu lote de ${producto.nombre} (${producto.calidad}) y me interesa. ¿Sigue disponible?`}
+          />
+        )}
 
         <div className="mt-auto flex items-center gap-2">
           <input

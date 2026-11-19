@@ -10,10 +10,11 @@ import { ProductorLayout } from '../features/productor/components/ProductorLayou
 import { DashboardPage } from '../features/productor/pages/DashboardPage'
 import { CultivosPage } from '../features/productor/pages/CultivosPage'
 import { NuevaSiembraPage } from '../features/productor/pages/NuevaSiembraPage'
-import { EstadoSiembrasPage } from '../features/productor/pages/EstadoSiembrasPage'
+import { EstadoSiembrasPage } from '../features/productor/pages/EstadoSiembraPage'
 import { CosechasPage } from '../features/productor/pages/CosechasPage'
 import { RematesPage } from '../features/productor/pages/RematesPage'
 import { VentasPage } from '../features/productor/pages/VentasPage'
+import { EntregasPage } from '../features/entregas/pages/EntregasPage'
 
 export const AppRoutes = () => {
   return (
@@ -24,6 +25,7 @@ export const AppRoutes = () => {
       <Route path="/recuperar" element={<ForgotPasswordPage/>} />
       <Route path="/tienda" element={<TiendaPage/>} />
       <Route path="/transportista" element={<TransportistaHome/>} />
+      <Route path="/mis-entregas" element={<EntregasPage/>} />
 
       <Route path="/productor" element={<ProductorLayout/>}>
         <Route index element={<DashboardPage/>} />
