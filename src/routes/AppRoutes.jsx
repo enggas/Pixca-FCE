@@ -23,6 +23,7 @@ export const AppRoutes = () => {
       <Route path="/registro" element={<SignupPage/>} />
       <Route path="/recuperar" element={<ForgotPasswordPage/>} />
       <Route path="/tienda" element={<TiendaPage/>} />
+      <Route>path="/"</Route>"
       <Route path="/transportista" element={<TransportistaHome/>} />
 
       <Route path="/productor" element={<ProductorLayout/>}>

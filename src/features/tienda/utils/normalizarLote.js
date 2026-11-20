@@ -1,3 +1,39 @@
+// Imágenes en /public/productos (las mismas del landing)
+const IMAGENES_POR_CULTIVO = [
+  { clave: 'naranja', src: '/productos/naranjas.jpg' },
+  { clave: 'tomate', src: '/productos/tomates.jpg' },
+  { clave: 'platano', src: '/productos/platanos.jpg' },
+  { clave: 'aguacate', src: '/productos/aguacates.jpg' },
+  { clave: 'frijol', src: '/productos/frijoles.jpg' },
+]
+
+const EXTENSIONES = ['jpg', 'jpeg', 'png', 'webp']
+
+const slug = (texto = '') =>
+  texto
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+
+// Lista de rutas candidatas: primero el mapeo conocido, luego variantes del nombre del cultivo
+const getImagenesCultivo = (nombre = '') => {
+  const normalizado = slug(nombre).replace(/-/g, ' ')
+  const conocida = IMAGENES_POR_CULTIVO.find(({ clave }) => normalizado.includes(clave))?.src
+
+  const completo = slug(nombre)
+  const primera = completo.split('-')[0]
+  const bases = [...new Set([`${primera}s`, primera, `${primera}es`, completo, `${completo}s`])].filter(Boolean)
+
+  const candidatas = bases.flatMap((base) => EXTENSIONES.map((ext) => `/productos/${base}.${ext}`))
+  return [...new Set([conocida, ...candidatas].filter(Boolean))]
+}
+
+export const formatCordobas = (monto) =>
+  `C$ ${Number(monto).toLocaleString('es-NI', { maximumFractionDigits: 2 })}`
+
 export const CATEGORIA_LABELS = {
   frutas: 'Frutas',
   vegetales: 'Vegetales',
@@ -5,22 +41,22 @@ export const CATEGORIA_LABELS = {
   granos_basicos: 'Granos básicos',
 }
 
-export const formatCordobas = (monto) =>
-  `C$ ${Number(monto).toLocaleString('es-NI', { maximumFractionDigits: 2 })}`
-
-export const normalizarLote = (lote) => {
+export const normalizarLote = (lote)  => {
   const cosecha = Array.isArray(lote.cosechas) ? lote.cosechas[0] : lote.cosechas
   const cultivo = Array.isArray(cosecha?.cultivo) ? cosecha.cultivo[0] : cosecha?.cultivo
   const productor = Array.isArray(cosecha?.perfiles) ? cosecha.perfiles[0] : cosecha?.perfiles
   const remateRaw = Array.isArray(lote.alerta_remates) ? lote.alerta_remates[0] : lote.alerta_remates
   const remate =
-  remateRaw?.esta_activa && new Date(remateRaw.fecha_fin) > new Date() ? remateRaw : null
+    remateRaw?.esta_activa && new Date(remateRaw.fecha_fin) > new Date() ? remateRaw : null
   const unidad = cosecha?.unidad_medida === 'libras' ? 'lb' : 'u'
   const precioBase = Number(lote.precio_base_lote)
+
+
 
   return {
     id: lote.id,
     nombre: cultivo?.nombre || 'Producto',
+    imagen: getImagenesCultivo(cultivo?.nombre),
     categoria: cultivo?.categoria || null,
     calidad: lote.calidad_clasificacion,
     productorNombre: productor?.nombre_completo || 'Productor',

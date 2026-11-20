@@ -1,8 +1,35 @@
 import { useState } from 'react'
-import { MapPin, ShoppingCart, Clock } from 'lucide-react'
-import { ProductImage } from '../../landing/components/ProductImage'
+import { MapPin, ShoppingCart, Clock, Leaf } from 'lucide-react'
 import { normalizarLote } from '../utils/normalizarLote'
 import { useCarrito } from '../hooks/useCarrito'
+
+// Prueba cada ruta candidata en orden hasta que una cargue
+const ImagenProducto = ({ rutas, alt }) => {
+  const [indice, setIndice] = useState(0)
+  const lista = Array.isArray(rutas) ? rutas : rutas ? [rutas] : []
+
+  if (indice >= lista.length) {
+    return (
+      <div
+        role="img"
+        aria-label={alt}
+        className="absolute inset-0 w-full h-full flex items-center justify-center bg-mint text-brand-400"
+      >
+        <Leaf className="w-10 h-10" />
+      </div>
+    )
+  }
+
+  return (
+    <img
+      key={lista[indice]}
+      src={lista[indice]}
+      alt={alt}
+      onError={() => setIndice((actual) => actual + 1)}
+      className="absolute inset-0 w-full h-full object-cover"
+    />
+  )
+}
 
 export const ProductoCard = ({ lote }) => {
   const producto = normalizarLote(lote)
@@ -22,7 +49,7 @@ export const ProductoCard = ({ lote }) => {
   return (
     <div className="border border-line rounded-2xl overflow-hidden hover:shadow-md transition-shadow bg-white flex flex-col">
       <div className="relative aspect-square">
-        <ProductImage alt={producto.nombre} className="absolute inset-0 w-full h-full" />
+        <ImagenProducto rutas={producto.imagen} alt={producto.nombre} />
         {producto.descuentoTexto && (
           <span className="absolute top-2 left-2 bg-sale text-white text-xs font-bold rounded-lg px-2.5 py-1">
             {producto.descuentoTexto}
