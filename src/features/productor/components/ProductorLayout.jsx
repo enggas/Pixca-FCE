@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { signOut } from '../../auth/services/authService'
 import { usePerfilProductor } from '../hooks/useProductor'
 import { ProductorTopBar } from './ProductorTopBar'
-import { ProductorSidebar } from './ProductorSidebar'
+import { ProductorSidebar } from './ProductorSideBar'
 import { ToastProvider } from './ToastProvider'
 
 export const ProductorLayout = () => {
