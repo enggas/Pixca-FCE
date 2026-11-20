@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 // Imágenes en /public/productos (las mismas del landing)
-=======
-// Imágenes en /public/productos, buscadas por palabra clave del nombre del cultivo
->>>>>>> 760c7ce (feat(images) modulo comprador con imagenes)
 const IMAGENES_POR_CULTIVO = [
   { clave: 'naranja', src: '/productos/naranjas.jpg' },
   { clave: 'tomate', src: '/productos/tomates.jpg' },
@@ -10,7 +6,6 @@ const IMAGENES_POR_CULTIVO = [
   { clave: 'aguacate', src: '/productos/aguacates.jpg' },
   { clave: 'frijol', src: '/productos/frijoles.jpg' },
 ]
-<<<<<<< HEAD
 
 const EXTENSIONES = ['jpg', 'jpeg', 'png', 'webp']
 
@@ -47,20 +42,6 @@ export const CATEGORIA_LABELS = {
 }
 
 export const normalizarLote = (lote)  => {
-=======
-
-const getImagenCultivo = (nombre = '') => {
-  const normalizado = nombre
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-  return IMAGENES_POR_CULTIVO.find(({ clave }) => normalizado.includes(clave))?.src ?? null
-}
-export const formatCordobas = (monto) =>
-  `C$ ${Number(monto).toLocaleString('es-NI', { maximumFractionDigits: 2 })}`
-
-export const normalizarLote = (lote) => {
->>>>>>> 760c7ce (feat(images) modulo comprador con imagenes)
   const cosecha = Array.isArray(lote.cosechas) ? lote.cosechas[0] : lote.cosechas
   const cultivo = Array.isArray(cosecha?.cultivo) ? cosecha.cultivo[0] : cosecha?.cultivo
   const productor = Array.isArray(cosecha?.perfiles) ? cosecha.perfiles[0] : cosecha?.perfiles
@@ -69,7 +50,6 @@ export const normalizarLote = (lote) => {
     remateRaw?.esta_activa && new Date(remateRaw.fecha_fin) > new Date() ? remateRaw : null
   const unidad = cosecha?.unidad_medida === 'libras' ? 'lb' : 'u'
   const precioBase = Number(lote.precio_base_lote)
-<<<<<<< HEAD
 
 
 
@@ -77,13 +57,6 @@ export const normalizarLote = (lote) => {
     id: lote.id,
     nombre: cultivo?.nombre || 'Producto',
     imagen: getImagenesCultivo(cultivo?.nombre),
-=======
-  
-  return {
-    id: lote.id,
-    nombre: cultivo?.nombre || 'Producto',
-    imagen: getImagenCultivo(cultivo?.nombre),
->>>>>>> 760c7ce (feat(images) modulo comprador con imagenes)
     categoria: cultivo?.categoria || null,
     calidad: lote.calidad_clasificacion,
     productorNombre: productor?.nombre_completo || 'Productor',
