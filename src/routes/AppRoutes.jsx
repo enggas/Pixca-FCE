@@ -10,7 +10,7 @@ import { ProductorLayout } from '../features/productor/components/ProductorLayou
 import { DashboardPage } from '../features/productor/pages/DashboardPage'
 import { CultivosPage } from '../features/productor/pages/CultivosPage'
 import { NuevaSiembraPage } from '../features/productor/pages/NuevaSiembraPage'
-import { EstadoSiembrasPage } from '../features/productor/pages/EstadoSiembrasPage'
+import { EstadoSiembrasPage } from '../features/productor/pages/EstadoSiembraPage'
 import { CosechasPage } from '../features/productor/pages/CosechasPage'
 import { RematesPage } from '../features/productor/pages/RematesPage'
 import { VentasPage } from '../features/productor/pages/VentasPage'
