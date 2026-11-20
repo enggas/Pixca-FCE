@@ -12,9 +12,12 @@ export const getLotesDisponibles = async () => {
       cosechas (
         id,
         unidad_medida,
-        cultivo ( nombre, categoria ),
+        cantidad_total,
+        fecha_cosecha,
+        fecha_caducidad_estimada,
+        cultivo ( nombre, categoria, descripcion ),
         productor_id,
-        perfiles ( nombre_completo, direccion_general )
+        perfiles ( nombre_completo, direccion_general, telefono )
       ),
       alerta_remates ( precio_descuento, esta_activa, fecha_fin, motivo_remate )
     `)

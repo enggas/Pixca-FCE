@@ -1,4 +1,11 @@
-// Imágenes en /public/productos (las mismas del landing)
+export const CATEGORIA_LABELS = {
+  frutas: 'Frutas',
+  vegetales: 'Vegetales',
+  tuberculos: 'Tubérculos',
+  granos_basicos: 'Granos básicos',
+}
+
+// Imágenes en /public/productos, buscadas por palabra clave del nombre del cultivo
 const IMAGENES_POR_CULTIVO = [
   { clave: 'naranja', src: '/productos/naranjas.jpg' },
   { clave: 'tomate', src: '/productos/tomates.jpg' },
@@ -7,41 +14,29 @@ const IMAGENES_POR_CULTIVO = [
   { clave: 'frijol', src: '/productos/frijoles.jpg' },
 ]
 
-const EXTENSIONES = ['jpg', 'jpeg', 'png', 'webp']
-
-const slug = (texto = '') =>
-  texto
+const getImagenCultivo = (nombre = '') => {
+  const normalizado = nombre
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-
-// Lista de rutas candidatas: primero el mapeo conocido, luego variantes del nombre del cultivo
-const getImagenesCultivo = (nombre = '') => {
-  const normalizado = slug(nombre).replace(/-/g, ' ')
-  const conocida = IMAGENES_POR_CULTIVO.find(({ clave }) => normalizado.includes(clave))?.src
-
-  const completo = slug(nombre)
-  const primera = completo.split('-')[0]
-  const bases = [...new Set([`${primera}s`, primera, `${primera}es`, completo, `${completo}s`])].filter(Boolean)
-
-  const candidatas = bases.flatMap((base) => EXTENSIONES.map((ext) => `/productos/${base}.${ext}`))
-  return [...new Set([conocida, ...candidatas].filter(Boolean))]
+  return IMAGENES_POR_CULTIVO.find(({ clave }) => normalizado.includes(clave))?.src ?? null
 }
 
 export const formatCordobas = (monto) =>
   `C$ ${Number(monto).toLocaleString('es-NI', { maximumFractionDigits: 2 })}`
 
-export const CATEGORIA_LABELS = {
-  frutas: 'Frutas',
-  vegetales: 'Vegetales',
-  tuberculos: 'Tubérculos',
-  granos_basicos: 'Granos básicos',
+const formatFecha = (valor) => {
+  if (!valor) return null
+  const fecha = new Date(valor.length === 10 ? `${valor}T00:00:00` : valor)
+  return fecha.toLocaleDateString('es-NI', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-export const normalizarLote = (lote)  => {
+const diasHasta = (valor) => {
+  if (!valor) return null
+  return Math.ceil((new Date(`${valor}T00:00:00`) - new Date()) / 86400000)
+}
+
+export const normalizarLote = (lote) => {
   const cosecha = Array.isArray(lote.cosechas) ? lote.cosechas[0] : lote.cosechas
   const cultivo = Array.isArray(cosecha?.cultivo) ? cosecha.cultivo[0] : cosecha?.cultivo
   const productor = Array.isArray(cosecha?.perfiles) ? cosecha.perfiles[0] : cosecha?.perfiles
@@ -51,12 +46,10 @@ export const normalizarLote = (lote)  => {
   const unidad = cosecha?.unidad_medida === 'libras' ? 'lb' : 'u'
   const precioBase = Number(lote.precio_base_lote)
 
-
-
   return {
     id: lote.id,
     nombre: cultivo?.nombre || 'Producto',
-    imagen: getImagenesCultivo(cultivo?.nombre),
+    imagen: getImagenCultivo(cultivo?.nombre),
     categoria: cultivo?.categoria || null,
     calidad: lote.calidad_clasificacion,
     productorNombre: productor?.nombre_completo || 'Productor',
@@ -73,5 +66,14 @@ export const normalizarLote = (lote)  => {
       ? new Date(remate.fecha_fin).toLocaleDateString('es-NI', { day: 'numeric', month: 'short', year: 'numeric' })
       : null,
     descuentoTexto: remate ? `-${Math.round((1 - remate.precio_descuento / precioBase) * 100)}% remate` : null,
+
+    // ---- Detalles extra del producto ----
+    descripcion: cultivo?.descripcion || null,
+    categoriaTexto: CATEGORIA_LABELS[cultivo?.categoria] || null,
+    cantidadTotal: cosecha?.cantidad_total != null ? Number(cosecha.cantidad_total) : null,
+    fechaCosechaTexto: formatFecha(cosecha?.fecha_cosecha),
+    fechaCaducidadTexto: formatFecha(cosecha?.fecha_caducidad_estimada),
+    diasParaCaducar: diasHasta(cosecha?.fecha_caducidad_estimada),
+    productorTelefono: productor?.telefono || null,
   }
 }

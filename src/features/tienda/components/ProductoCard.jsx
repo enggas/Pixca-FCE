@@ -1,40 +1,15 @@
 import { useState } from 'react'
-import { MapPin, ShoppingCart, Clock, Leaf } from 'lucide-react'
+import { MapPin, ShoppingCart, Clock, Info } from 'lucide-react'
+import { ProductImage } from '../../landing/components/ProductImage'
 import { normalizarLote } from '../utils/normalizarLote'
 import { useCarrito } from '../hooks/useCarrito'
-
-// Prueba cada ruta candidata en orden hasta que una cargue
-const ImagenProducto = ({ rutas, alt }) => {
-  const [indice, setIndice] = useState(0)
-  const lista = Array.isArray(rutas) ? rutas : rutas ? [rutas] : []
-
-  if (indice >= lista.length) {
-    return (
-      <div
-        role="img"
-        aria-label={alt}
-        className="absolute inset-0 w-full h-full flex items-center justify-center bg-mint text-brand-400"
-      >
-        <Leaf className="w-10 h-10" />
-      </div>
-    )
-  }
-
-  return (
-    <img
-      key={lista[indice]}
-      src={lista[indice]}
-      alt={alt}
-      onError={() => setIndice((actual) => actual + 1)}
-      className="absolute inset-0 w-full h-full object-cover"
-    />
-  )
-}
+import { DetallesProductoModal } from './DetallesProductoModal'
 
 export const ProductoCard = ({ lote }) => {
   const producto = normalizarLote(lote)
   const { items, agregar } = useCarrito()
   const [cantidad, setCantidad] = useState(1)
+  const [verDetalles, setVerDetalles] = useState(false)
 
   const enCarrito = items.find((i) => i.loteId === producto.id)?.cantidad ?? 0
   const disponible = producto.stock - enCarrito
@@ -49,7 +24,7 @@ export const ProductoCard = ({ lote }) => {
   return (
     <div className="border border-line rounded-2xl overflow-hidden hover:shadow-md transition-shadow bg-white flex flex-col">
       <div className="relative aspect-square">
-        <ImagenProducto rutas={producto.imagen} alt={producto.nombre} />
+        <ProductImage src={producto.imagen} alt={producto.nombre} className="absolute inset-0 w-full h-full" />
         {producto.descuentoTexto && (
           <span className="absolute top-2 left-2 bg-sale text-white text-xs font-bold rounded-lg px-2.5 py-1">
             {producto.descuentoTexto}
@@ -89,27 +64,40 @@ export const ProductoCard = ({ lote }) => {
           {enCarrito > 0 ? ` · ${enCarrito} en tu carrito` : ''}
         </p>
 
-        <div className="mt-auto flex items-center gap-2">
-          <input
-            type="number"
-            min={1}
-            max={Math.max(disponible, 1)}
-            value={cantidad}
-            onChange={(event) => setCantidad(Number(event.target.value))}
-            aria-label={`Cantidad de ${producto.nombre}`}
-            className="w-16 px-2 py-1.5 border border-line rounded-lg text-sm text-ink"
-          />
+        <div className="mt-auto space-y-2">
           <button
             type="button"
-            onClick={handleAgregar}
-            disabled={!cantidadValida}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-brand-500 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => setVerDetalles(true)}
+            className="w-full flex items-center justify-center gap-1.5 py-2 border-2 border-brand-500 text-brand-700 hover:bg-brand-50 text-sm font-semibold rounded-lg transition-colors"
           >
-            <ShoppingCart className="w-4 h-4" />
-            Agregar
+            <Info className="w-4 h-4" />
+            Ver detalles
           </button>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              min={1}
+              max={Math.max(disponible, 1)}
+              value={cantidad}
+              onChange={(event) => setCantidad(Number(event.target.value))}
+              aria-label={`Cantidad de ${producto.nombre}`}
+              className="w-16 px-2 py-1.5 border border-line rounded-lg text-sm text-ink"
+            />
+            <button
+              type="button"
+              onClick={handleAgregar}
+              disabled={!cantidadValida}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-brand-500 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              Agregar
+            </button>
+          </div>
         </div>
       </div>
+
+      {verDetalles && <DetallesProductoModal producto={producto} onClose={() => setVerDetalles(false)} />}
     </div>
   )
 }
